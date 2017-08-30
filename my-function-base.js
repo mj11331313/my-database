@@ -127,6 +127,8 @@
         /*
         * 若返回true,身份证号正确；
         * 返回false,身份证号错误
+        *
+        *cardid：需要验证的身份证号
         * */
         function isIdCard(cardid) {
             //身份证正则表达式(18位)
