@@ -88,10 +88,14 @@
         * handler: 事件处理函数
         * */
         function addEvent( elem , type , handler ){
-            if( elem.addEventListener ){
+            if( elem.addEventListener ){ // 能力检测
                 elem.addEventListener( type , handler );
             }else if( elem.attachEvent ){
-                elem.attachEvent( "on" + type , handler );
+                // 通过每次调用时都给对象定义不同属性，保证绑定的事件处理函数和删除的是同一个：
+                elem[type + handler] = function(){ 
+                    handler.call(elem);  // 改变IE中的this指向问题
+                };
+                elem.attachEvent( "on" + type , elem[type + handler] );
             }else{
                 elem[ "on" + type ] = handler;
             }
@@ -127,8 +131,6 @@
         /*
         * 若返回true,身份证号正确；
         * 返回false,身份证号错误
-        *
-        *cardid：需要验证的身份证号
         * */
         function isIdCard(cardid) {
             //身份证正则表达式(18位)
@@ -162,9 +164,28 @@
             if (date instanceof Date) {
                 var year = date.getFullYear();
                 var month = date.getMonth() + 1;
-                month = month < 10 ? '0' + month : month;
+                month = month < 10 ? "0"+ month : month;
                 var day = date.getDate();
-                day = day < 10 ? '0' + day : day;
+                day = day < 10 ? "0" + day : day;
                 return year + month + day;
             }
         };
+
+
+        //9.移除事件：
+        /*
+        * elem: 对象
+        * type: 事件类型
+        * handler: 事件处理函数
+        * */
+        function removeEvent(elem , type , handler){
+            if( elem.removeEventListener ){
+                elem.removeEventListener(type,handler);
+            }else if( elem.detachEvent ){
+                // elem.fon为调用绑定事件方法时给elem添加的自定义属性，表示其事件处理函数：
+                elem.detachEvent( "on" + type, elem[type + handler]);
+            }else{
+                // 将事件处理函数清空，相当于移除事件：
+                elem["on" + type] = null;
+            }
+        }
