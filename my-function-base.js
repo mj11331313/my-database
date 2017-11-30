@@ -189,3 +189,70 @@
                 elem["on" + type] = null;
             }
         }
+        //10.修改或获取一个元素的属性:
+        /*
+         * 修改或获取一个元素的属性
+         * elem: 要修改的元素对象
+         * name: 属性名
+         * value: 属性值
+         */
+        function attr(elem, name, value) {
+            if ( !name || name.constructor != String ) return '';
+            name = { 'for': 'htmlFor', 'class': 'className' }[name] || name;
+            if ( value != null ) {
+                elem[name] = value;
+                if ( elem.setAttribute )
+                elem.setAttribute(name,value);
+            }
+            return elem[name] || elem.getAttribute(name) || '';
+        }
+        
+
+        //11.修改或获取一个元素的value:
+        /*
+         * elem: 要修改的元素对象
+         * value: value属性的值
+         */
+        function val(elem, value){
+            if(!value) return elem.value || "";
+            if(typeof value != "string"  && typeof value != "number" && typeof value != "boolean")
+                return "";
+            elem.value = value;
+        }
+
+
+        //12.为元素添加class:
+        /**
+         * elem: 要修改的元素对象
+         * className: 要添加的类名
+         */
+        function addClass(elem, className){
+            if(!elem || typeof className != "string")  return;
+            if(hasClass(elem, className)) return;
+            elem.className = elem.className + " " + className;
+        }
+
+
+        //13.判断元素是否包含指定的class:
+        /*
+         * elem: 要查找的元素对象
+         * className: 要判断的类名
+         */
+        function hasClass(elem, className){
+            var re = new RegExp("\\b" + className + "\\b");
+            return re.test(elem.className);
+        }
+
+
+        //14.为元素移除class:
+        /*
+         * elem: 要修改的元素对象
+         * className: 要移除的类名
+         */
+        function removeClass(elem, className){
+            if(!elem || typeof className != "string") return;
+
+            // if(!hasClass(elem, className)) return;
+            var re = new RegExp("\\b" + className + "\\b");
+            elem.className = trim(elem.className.replace(re, ""));
+        }
